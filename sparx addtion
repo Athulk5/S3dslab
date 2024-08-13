@@ -1,0 +1,100 @@
+#include <stdio.h>
+
+#define MAX 100
+
+void display(int T[][3], int k) {
+    printf("Row\tColumn\tValue\n");
+    for (int i = 0; i <= k; i++) {
+        printf("%d\t%d\t%d\n", T[i][0], T[i][1], T[i][2]);
+    }
+}
+
+int add(int T1[][3], int T2[][3], int m, int n, int k1, int k2, int T3[][3]) {
+    int i = 1, j = 1, k = 0;
+
+    T3[0][0] = m;
+    T3[0][1] = n;
+
+    while (i <= k1 && j <= k2) {
+        if (T1[i][0] == T2[j][0] && T1[i][1] == T2[j][1]) {
+            k++;
+            T3[k][0] = T1[i][0];
+            T3[k][1] = T1[i][1];
+            T3[k][2] = T1[i][2] + T2[j][2];
+            i++;
+            j++;
+        } else if (T1[i][0] < T2[j][0] || (T1[i][0] == T2[j][0] && T1[i][1] < T2[j][1])) {
+            k++;
+            T3[k][0] = T1[i][0];
+            T3[k][1] = T1[i][1];
+            T3[k][2] = T1[i][2];
+            i++;
+        } else {
+            k++;
+            T3[k][0] = T2[j][0];
+            T3[k][1] = T2[j][1];
+            T3[k][2] = T2[j][2];
+            j++;
+        }
+    }
+
+    while (i <= k1) {
+        k++;
+        T3[k][0] = T1[i][0];
+        T3[k][1] = T1[i][1];
+        T3[k][2] = T1[i][2];
+        i++;
+    }
+
+    while (j <= k2) {
+        k++;
+        T3[k][0] = T2[j][0];
+        T3[k][1] = T2[j][1];
+        T3[k][2] = T2[j][2];
+        j++;
+    }
+
+    T3[0][2] = k;  // Number of non-zero elements in T3
+    return k;
+}
+
+int main() {
+    int m, n, k1, k2;
+
+    // Example matrices
+    int T1[MAX][3] = {
+        {4, 4, 4}, // First element: m, n, number of non-zero elements
+        {0, 1, 5},
+        {1, 3, 8},
+        {2, 0, 3},
+        {3, 2, 6}
+    };
+
+    int T2[MAX][3] = {
+        {4, 4, 3}, // First element: m, n, number of non-zero elements
+        {0, 1, 3},
+        {1, 2, 7},
+        {3, 2, 2}
+    };
+
+    // Dimensions and non-zero elements count
+    m = T1[0][0];
+    n = T1[0][1];
+    k1 = T1[0][2];
+    k2 = T2[0][2];
+
+    int T3[MAX][3];  // Resultant matrix
+
+    int k = add(T1, T2, m, n, k1, k2, T3);
+
+    printf("Matrix T1:\n");
+    display(T1, k1);
+
+    printf("\nMatrix T2:\n");
+    display(T2, k2);
+
+    printf("\nResultant Matrix T3 (Addition of T1 and T2):\n");
+    display(T3, k);
+
+    return 0;
+}
