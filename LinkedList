@@ -1,0 +1,229 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a linked list node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to insert at the front of the list
+struct Node* InsertF(struct Node* head, int item) {
+    struct Node* newnode = (struct Node*)malloc(sizeof(struct Node));
+    
+    if (newnode == NULL) {
+        printf("Memory insufficient\n");
+        return head;
+    }
+    
+    newnode->data = item;
+    newnode->next = head;
+    head = newnode;
+    
+    return head;
+}
+
+// Function to insert at the end of the list
+struct Node* InsertE(struct Node* head, int item) {
+    struct Node* newnode = (struct Node*)malloc(sizeof(struct Node));
+    if (newnode == NULL) {
+        printf("Memory insufficient\n");
+        return head;
+    }
+    
+    newnode->data = item;
+    newnode->next = NULL;
+    
+    if (head == NULL) {
+        return newnode;
+    }
+    
+    struct Node* current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newnode;
+    
+    return head;
+}
+
+// Function to insert at any position
+struct Node* InsertAnyP(struct Node* head, int item, int pos) {
+    struct Node* newnode = (struct Node*)malloc(sizeof(struct Node));
+    if (newnode == NULL) {
+        printf("Memory insufficient\n");
+        return head;
+    }
+
+    newnode->data = item;
+
+    if (pos == 1) {
+        newnode->next = head;
+        return newnode;
+    }
+
+    struct Node* current = head;
+    for (int i = 1; i < pos - 1; i++) {
+        if (current == NULL) {
+            printf("Invalid position\n");
+            free(newnode);
+            return head;
+        }
+        current = current->next;
+    }
+
+    newnode->next = current->next;
+    current->next = newnode;
+
+    return head;
+}
+
+// Function to delete the front node
+struct Node* Delete_Front(struct Node* head) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return head;
+    }
+    
+    struct Node* temp = head;
+    head = head->next;
+    free(temp);
+    
+    return head;
+}
+
+// Function to delete the end node
+struct Node* Delete_End(struct Node* head) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return head;
+    }
+    
+    if (head->next == NULL) {
+        free(head);
+        return NULL;
+    }
+    
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+    
+    while (temp->next != NULL) {
+        prev = temp;
+        temp = temp->next;
+    }
+    
+    prev->next = NULL;
+    free(temp);
+    
+    return head;
+}
+
+// Function to delete node at any position
+struct Node* Delete_AnyPos(struct Node* head, int pos) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return head;
+    }
+
+    if (pos == 1) {
+        struct Node* temp = head;
+        head = head->next;
+        free(temp);
+        return head;
+    }
+
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+
+    for (int i = 1; i < pos; i++) {
+        if (temp == NULL) {
+            printf("Invalid position\n");
+            return head;
+        }
+        prev = temp;
+        temp = temp->next;
+    }
+
+    prev->next = temp->next;
+    free(temp);
+
+    return head;
+}
+
+// Function to print the linked list
+void printList(struct Node* head) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct Node* head = NULL;  // Initialize the linked list
+    int choice, item, pos;
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Insert at Front\n");
+        printf("2. Insert at End\n");
+        printf("3. Insert at Any Position\n");
+        printf("4. Delete Front\n");
+        printf("5. Delete End\n");
+        printf("6. Delete at Any Position\n");
+        printf("7. Print List\n");
+        printf("8. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the value to insert: ");
+                scanf("%d", &item);
+                head = InsertF(head, item);
+                break;
+
+            case 2:
+                printf("Enter the value to insert: ");
+                scanf("%d", &item);
+                head = InsertE(head, item);
+                break;
+
+            case 3:
+                printf("Enter the value to insert: ");
+                scanf("%d", &item);
+                printf("Enter the position: ");
+                scanf("%d", &pos);
+                head = InsertAnyP(head, item, pos);
+                break;
+
+            case 4:
+                head = Delete_Front(head);
+                break;
+
+            case 5:
+                head = Delete_End(head);
+                break;
+
+            case 6:
+                printf("Enter the position to delete: ");
+                scanf("%d", &pos);
+                head = Delete_AnyPos(head, pos);
+                break;
+
+            case 7:
+                printList(head);
+                break;
+
+            case 8:
+                printf("Exiting...\n");
+                break;
+
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    } while (choice != 8);
+
+    return 0;
+}
